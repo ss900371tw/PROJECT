@@ -27,8 +27,9 @@ INDEX_FILE_PATH = "faiss_index"
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
-
-vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=HuggingFaceEmbeddings(), allow_dangerous_deserialization=True)
+vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2"  # ✅ 選用小型通用模型
+), allow_dangerous_deserialization=True)
 
 
 import os
