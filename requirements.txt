@@ -3,6 +3,7 @@ google-generativeai
 langchain_community
 python-docx
 pdf2image 
+sentence-transformers
 google-cloud-vision
 undetected-chromedriver==3.5.5 
 ollama
