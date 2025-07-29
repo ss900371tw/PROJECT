@@ -37,13 +37,20 @@ from google.cloud import vision
 from google.oauth2 import service_account
 from google.cloud import vision
 
-# 從 st.secrets 取得 service account JSON（前提是已正確設定）
-service_account_info = st.secrets["gcp_service_account"]  # 來自 Streamlit secrets.toml
+import os
+import json
+import tempfile
+import streamlit as st
+from google.cloud import vision
 
+# ✅ 從 secrets 取得 GCP 憑證
+service_account_info = st.secrets["gcp_service_account"]
+
+# ✅ 寫入臨時檔並設定環境變數
 with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
     json.dump(service_account_info, f)
     f.flush()
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name  # ✅ 關鍵行！
 
 vision_client = vision.ImageAnnotatorClient()
 
