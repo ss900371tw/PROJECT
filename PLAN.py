@@ -24,7 +24,15 @@ model = genai.GenerativeModel("gemini-2.5-flash")
 
 # ✅ 載入 FAISS 向量庫
 INDEX_FILE_PATH = "faiss_index"
-vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=HuggingFaceEmbeddings(), allow_dangerous_deserialization=True)
+
+from langchain_community.embeddings import HuggingFaceEmbeddings
+
+embedding_model = HuggingFaceEmbeddings(
+    model_name="intfloat/e5-base-v2",  # 或你用的任何模型
+    model_kwargs={"device": "cpu"}     # 🔧 強制使用 CPU
+)
+
+vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=embedding_model, allow_dangerous_deserialization=True)
 GOOGLE_APPLICATION_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS","")
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_APPLICATION_CREDENTIALS
