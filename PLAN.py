@@ -13,7 +13,7 @@ from google.cloud import vision
 from pdf2image import convert_from_bytes
 import io
 from PIL import Image
-from difflib import SequenceMatcher
+from difflib import SequenceMatcher 
 from dotenv import load_dotenv
 # ✅ 初始化 Gemini API
 load_dotenv()
