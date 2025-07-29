@@ -33,21 +33,16 @@ vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=HuggingFaceEmbedding
 
 import os
 import json
-import tempfile
-import streamlit as st
+from google.cloud import vision
 
-# ✅ 從 secrets 中讀取 service account JSON
+# 將 secrets 寫成暫時 json 檔案
+with open("/tmp/service_account.json", "w") as f:
+    json.dump(st.secrets["gcp_service_account"], f)
 
-# ✅ 寫入臨時檔案並設定環境變數
-# ✅ 寫入臨時 JSON 檔案
-service_account_info = st.secrets["gcp_service_account"]
+# 設定 GOOGLE_APPLICATION_CREDENTIALS 環境變數
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/tmp/service_account.json"
 
-# ✅ 寫入暫存 JSON 檔案，並設為系統變數
-with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
-    json.dump(service_account_info, f)
-    f.flush()
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name  # ❗這才是真的寫入 JSON 檔路徑
-
+# 初始化 Vision client
 vision_client = vision.ImageAnnotatorClient()
 
 # ✅ 分類提示詞
