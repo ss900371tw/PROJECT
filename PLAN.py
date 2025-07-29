@@ -16,14 +16,18 @@ from PIL import Image
 from difflib import SequenceMatcher
 
 # ✅ 初始化 Gemini API
-GOOGLE_API_KEY = 'AIzaSyBgMdKfVDl7MO-bE3IY2EnLc_1t7pWkoUw'
+load_dotenv()
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY","")
+
 genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel("gemini-2.5-flash")
 
 # ✅ 載入 FAISS 向量庫
 INDEX_FILE_PATH = "faiss_index"
 vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=HuggingFaceEmbeddings(), allow_dangerous_deserialization=True)
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "quizocr-461409-db28f8349f76.json"
+GOOGLE_APPLICATION_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS","")
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_APPLICATION_CREDENTIALS
 vision_client = vision.ImageAnnotatorClient()
 
 # ✅ 分類提示詞
