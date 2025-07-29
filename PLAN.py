@@ -27,9 +27,13 @@ INDEX_FILE_PATH = "faiss_index"
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+
+# ✅ 指定模型名稱 + device，防止 meta tensor 錯誤
 embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2",  # ✅ 指定模型
-    model_kwargs={"device": "cpu"}  # ✅ 強制使用 CPU
+    model_name="sentence-transformers/all-MiniLM-L6-v2",  # ✅ 明確模型名
+    model_kwargs={"device": "cpu"}  # ✅ CPU 執行，安全
 )
 
 # ✅ 載入 FAISS 向量庫
@@ -38,7 +42,6 @@ vector_store = FAISS.load_local(
     embeddings=embeddings,
     allow_dangerous_deserialization=True
 )
-
 
 import os
 import json
