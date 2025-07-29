@@ -43,12 +43,20 @@ import tempfile
 import streamlit as st
 from google.cloud import vision
 
-# ✅ 從 secrets 取得 GCP 憑證
-creds_path = "creds/quizocr-461409-db28f8349f76.json"
+import os
+from google.oauth2 import service_account
+from google.cloud import vision
+
+# ✅ 使用絕對路徑防止找不到
+creds_path = os.path.abspath("creds/quizocr-461409-db28f8349f76.json")
+print("Credentials path:", creds_path)
+print("File exists?", os.path.exists(creds_path))
+
+# ✅ 建立 credentials
 credentials = service_account.Credentials.from_service_account_file(creds_path)
 
 # ✅ 初始化 Vision API 用戶端
-client = vision.ImageAnnotatorClient(credentials=credentials)
+vision_client = vision.ImageAnnotatorClient(credentials=credentials)
 
 # ✅ 在主程式中呼叫
 # ✅ 分類提示詞
