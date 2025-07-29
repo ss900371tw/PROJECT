@@ -1,6 +1,7 @@
 PyMuPDF  
 google-generativeai
 langchain_community
+faiss-cpu
 load_dotenv
 python-docx
 pdf2image 
