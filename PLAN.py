@@ -34,8 +34,14 @@ vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=HuggingFaceEmbedding
 import os
 import json
 from google.cloud import vision
+from google.oauth2 import service_account
+from google.cloud import vision
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "quizocr-461409-db28f8349f76.json"
+# 從 st.secrets 取得 service account JSON（前提是已正確設定）
+service_account_info = st.secrets["gcp_service_account"]
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
+
+
 vision_client = vision.ImageAnnotatorClient()
 
 # ✅ 在主程式中呼叫
