@@ -31,9 +31,15 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=HuggingFaceEmbeddings(), allow_dangerous_deserialization=True)
 
 
+import os
+import json
+import tempfile
+import streamlit as st
 
-
+# ✅ 從 secrets 中讀取 service account JSON
 service_account_info = st.secrets["gcp_service_account"]
+
+# ✅ 寫入臨時檔案並設定環境變數
 with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
     json.dump(service_account_info, f)
     f.flush()
