@@ -29,9 +29,15 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 
 
 vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=HuggingFaceEmbeddings(), allow_dangerous_deserialization=True)
-GOOGLE_APPLICATION_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS","")
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_APPLICATION_CREDENTIALS
+
+
+
+service_account_info = st.secrets["gcp_service_account"]
+with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+    json.dump(service_account_info, f)
+    f.flush()
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
 vision_client = vision.ImageAnnotatorClient()
 
 # ✅ 分類提示詞
