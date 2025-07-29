@@ -37,13 +37,16 @@ import tempfile
 import streamlit as st
 
 # ✅ 從 secrets 中讀取 service account JSON
-service_account_info = st.secrets["gcp_service_account"]
 
 # ✅ 寫入臨時檔案並設定環境變數
+# ✅ 寫入臨時 JSON 檔案
+service_account_info = st.secrets["gcp_service_account"]
+
 with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
     json.dump(service_account_info, f)
     f.flush()
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name  # ✅ 寫入系統環境變數
+
 vision_client = vision.ImageAnnotatorClient()
 
 # ✅ 分類提示詞
