@@ -35,15 +35,17 @@ import os
 import json
 from google.cloud import vision
 
-# 將 secrets 寫成暫時 json 檔案
-with open("/tmp/service_account.json", "w") as f:
-    json.dump(st.secrets["gcp_service_account"], f)
+# ✅ 把 secrets 中的 gcp_service_account 寫入 tempfile
+service_account_info = st.secrets["gcp_service_account"]
 
-# 設定 GOOGLE_APPLICATION_CREDENTIALS 環境變數
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/tmp/service_account.json"
+with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+    json.dump(service_account_info, f)
+    f.flush()
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
 
-# 初始化 Vision client
+# ✅ 初始化 Vision API 客戶端
 vision_client = vision.ImageAnnotatorClient()
+
 
 # ✅ 分類提示詞
 FACILITY_PROMPT = """
