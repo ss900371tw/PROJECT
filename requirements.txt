@@ -1,4 +1,4 @@
-fitz  
+PyMuPDF  
 undetected-chromedriver==3.5.5 
 ollama
 IPython
