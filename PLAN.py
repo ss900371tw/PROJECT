@@ -44,7 +44,7 @@ import streamlit as st
 from google.cloud import vision
 
 # ✅ 從 secrets 取得 GCP 憑證
-creds_path = "creds/gcp_key.json"
+creds_path = "creds/quizocr-461409-db28f8349f76.json"
 credentials = service_account.Credentials.from_service_account_file(creds_path)
 
 # ✅ 初始化 Vision API 用戶端
