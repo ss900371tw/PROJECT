@@ -57,7 +57,6 @@ credentials = service_account.Credentials.from_service_account_file(creds_path)
 
 # ✅ 初始化 Vision API 用戶端
 vision_client = vision.ImageAnnotatorClient(credentials=credentials)
-
 # ✅ 在主程式中呼叫
 # ✅ 分類提示詞
 FACILITY_PROMPT = """
