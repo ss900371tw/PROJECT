@@ -27,10 +27,17 @@ INDEX_FILE_PATH = "faiss_index"
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
-vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2",
-    model_kwargs={"device": "cpu"}  # 或 "cuda" 視硬體情況而定
-), allow_dangerous_deserialization=True)
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2",  # ✅ 指定模型
+    model_kwargs={"device": "cpu"}  # ✅ 強制使用 CPU
+)
+
+# ✅ 載入 FAISS 向量庫
+vector_store = FAISS.load_local(
+    INDEX_FILE_PATH,
+    embeddings=embeddings,
+    allow_dangerous_deserialization=True
+)
 
 
 import os
