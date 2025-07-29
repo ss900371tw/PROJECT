@@ -1,6 +1,7 @@
 PyMuPDF  
 google-generativeai
 langchain_community
+docx 
 undetected-chromedriver==3.5.5 
 ollama
 IPython
