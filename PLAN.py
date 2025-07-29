@@ -27,14 +27,8 @@ INDEX_FILE_PATH = "faiss_index"
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
-embedding_model = HuggingFaceEmbeddings(
-    model_name="intfloat/e5-base-v2",
-    model_kwargs={
-        "device": "cpu",                 # 明確告訴 sentence-transformers 用 CPU
-        "device_map": "auto"            # 部分模型用到 accelerate 時需要這個參數
-    }
-)
-vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=embedding_model, allow_dangerous_deserialization=True)
+
+vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=HuggingFaceEmbeddings(), allow_dangerous_deserialization=True)
 GOOGLE_APPLICATION_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS","")
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_APPLICATION_CREDENTIALS
