@@ -1,6 +1,7 @@
 PyMuPDF  
 google-generativeai
 langchain_community
+load_dotenv
 python-docx
 pdf2image 
 sentence-transformers
