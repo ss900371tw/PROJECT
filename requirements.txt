@@ -1,6 +1,7 @@
 streamlit
 PyMuPDF
 google-generativeai
+accelerate 
 pandas
 langchain
 langchain-community
