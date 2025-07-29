@@ -1,5 +1,5 @@
 PyMuPDF  
-google
+google-generativeai
 undetected-chromedriver==3.5.5 
 ollama
 IPython
