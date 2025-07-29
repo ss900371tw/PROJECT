@@ -44,15 +44,11 @@ import streamlit as st
 from google.cloud import vision
 
 # ✅ 從 secrets 取得 GCP 憑證
-service_account_info = st.secrets["gcp_service_account"]
+creds_path = "creds/gcp_key.json"
+credentials = service_account.Credentials.from_service_account_file(creds_path)
 
-# ✅ 寫入臨時檔並設定環境變數
-with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
-    json.dump(service_account_info, f)
-    f.flush()
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name  # ✅ 關鍵行！
-
-vision_client = vision.ImageAnnotatorClient()
+# ✅ 初始化 Vision API 用戶端
+client = vision.ImageAnnotatorClient(credentials=credentials)
 
 # ✅ 在主程式中呼叫
 # ✅ 分類提示詞
