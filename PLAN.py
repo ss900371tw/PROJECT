@@ -42,10 +42,11 @@ import streamlit as st
 # ✅ 寫入臨時 JSON 檔案
 service_account_info = st.secrets["gcp_service_account"]
 
+# ✅ 寫入暫存 JSON 檔案，並設為系統變數
 with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
     json.dump(service_account_info, f)
     f.flush()
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name  # ✅ 寫入系統環境變數
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name  # ❗這才是真的寫入 JSON 檔路徑
 
 vision_client = vision.ImageAnnotatorClient()
 
