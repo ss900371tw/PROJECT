@@ -34,24 +34,11 @@ vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=HuggingFaceEmbedding
 import os
 import json
 from google.cloud import vision
-@st.cache_resource
-def init_vision_client():
-    import tempfile
-    import os
-    import json
-    from google.cloud import vision
 
-    service_account_info = st.secrets["gcp_service_account"]
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
-        json.dump(service_account_info, f)
-        f.flush()
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
-
-    return vision.ImageAnnotatorClient()
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "quizocr-461409-db28f8349f76.json"
+vision_client = vision.ImageAnnotatorClient()
 
 # ✅ 在主程式中呼叫
-vision_client = init_vision_client()
-
 # ✅ 分類提示詞
 FACILITY_PROMPT = """
 請判斷下列申請文件所屬醫療機構層級，僅從下列五類中擇一，**不得恣意新增新分類**：
