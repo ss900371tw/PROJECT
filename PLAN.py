@@ -34,13 +34,13 @@ from langchain_community.vectorstores import FAISS
 import torch
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
-embeddings = HuggingFaceEmbeddings(
-    model_kwargs={"device": device},
-    encode_kwargs={"normalize_embeddings": False}
-)
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
-vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=embeddings)
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2",  # ✅ 指定模型
+    cache_folder="./hf_cache"  # ✅ 可選，避免重複下載
+)
+vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=embeddings, allow_dangerous_deserialization=True)
 
 
 import os
