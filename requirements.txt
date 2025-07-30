@@ -4,7 +4,6 @@ google-generativeai
 accelerate  
 pandas
 langchain
-langchain_huggingface 
 langchain-community
 faiss-cpu
 sentence-transformers
