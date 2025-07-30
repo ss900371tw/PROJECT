@@ -62,13 +62,15 @@ import streamlit as st
 from google.oauth2 import service_account
 from google.cloud import vision
 
-# ✅ 從 secrets 讀取 service account info
-service_account_info = st.secrets["gcp_service_account"]
+import streamlit as st
+from google.oauth2 import service_account
+from google.cloud import vision
 
-# ✅ 建立 credentials
+# 從 secrets 取得 credentials
+service_account_info = st.secrets["gcp_service_account"]
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
 
-# ✅ 傳入 credentials 建立 Vision client
+# 建立 vision client（✅ 指定 credentials）
 vision_client = vision.ImageAnnotatorClient(credentials=credentials)
 
 # ✅ 在主程式中呼叫
