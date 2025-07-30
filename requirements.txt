@@ -1,6 +1,6 @@
 # Web UI
 streamlit>=1.31.0
-
+google-cloud-vision>=3.8.0
 # PDF 處理
 PyMuPDF==1.23.24  # fitz
 python-docx>=0.8.11
