@@ -76,7 +76,7 @@ import os
 
 from google.oauth2 import service_account
 from google.cloud import vision
-
+SCOPES = ["https://www.googleapis.com/auth/cloud-platform"]
 # 如果你是從 secrets 或其他方式取得字典型別的憑證資訊
 credentials_dict = {
   "type": "service_account",
