@@ -38,7 +38,6 @@ embeddings = HuggingFaceEmbeddings(
         "device": "cpu",  # ✅ 可以保留，但不是關鍵
         "low_cpu_mem_usage": False  # ✅ 關鍵修正：避免 meta tensor
     },
-    cache_folder="./.cache"
 )
 
 vector_store = FAISS.load_local(
