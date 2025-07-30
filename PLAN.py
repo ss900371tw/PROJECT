@@ -29,10 +29,18 @@ from langchain_community.vectorstores import FAISS
 
 # 修改後
 import torch
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-mpnet-base-v2",  # 👈 明確指定
+    cache_folder="./.cache"  # ✅ 可選：指定模型快取資料夾
+)
+
+vector_store = FAISS.load_local(
+    INDEX_FILE_PATH,
+    embeddings=embeddings,
+    allow_dangerous_deserialization=True
+)
 
 
-
-vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=HuggingFaceEmbeddings(), allow_dangerous_deserialization=True)
 
 
 import os
