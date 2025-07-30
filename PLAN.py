@@ -51,12 +51,9 @@ import streamlit as st
 from google.cloud import vision
 
 import os
-from google.oauth2 import service_account
-from google.cloud import vision
 
-import streamlit as st
-from google.oauth2 import service_account
-from google.cloud import vision
+
+
 
 
 
@@ -193,28 +190,11 @@ def extract_text_by_line(pdf_bytes):
                 lines.append(text)
     return "\n\n".join(lines)
 
-import pytesseract
-from PIL import Image
 import fitz  # PyMuPDF
-import io
-import easyocr
 import fitz
 from PIL import Image
-import io
 
-def is_scanned_pdf(pdf_bytes, text_threshold=500):
-    try:
-        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-        all_text = ""
-        for page in doc:
-            page_text = page.get_text().strip()
-            all_text += page_text + "\n"
 
-        # 判斷整份 PDF 的文字量夠不夠
-        return len(all_text.strip()) < text_threshold
-    except Exception as e:
-        print(f"❌ 無法解析 PDF：{e}")
-        return True  # 保守起見，無法讀時視為掃描 PDF
 
 
 
@@ -250,7 +230,6 @@ def get_gemini_response(prompt):
 
 
 from langchain.chains.question_answering import load_qa_chain
-from langchain.llms import OpenAI  # 你使用 Gemini 的話可改為自己包裝的 Gemini 函數
 from langchain.docstore.document import Document
 
 def query_rag_for_legal_compliance(full_text, vector_store=vector_store, model=model):
