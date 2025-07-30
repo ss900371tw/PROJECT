@@ -92,9 +92,14 @@ credentials_dict = {
   "universe_domain": "googleapis.com"
 }
 
-credentials = service_account.Credentials.from_service_account_info(credentials_dict)
-vision_client = vision.ImageAnnotatorClient(credentials=credentials)
+from google.oauth2 import service_account
 
+SCOPES = ["https://www.googleapis.com/auth/cloud-platform"]
+credentials = service_account.Credentials.from_service_account_info(
+    credentials_dict,
+    scopes=SCOPES
+)
+vision_client = vision.ImageAnnotatorClient(credentials=credentials)
 
 
 
