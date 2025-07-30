@@ -36,7 +36,7 @@ embeddings = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-mpnet-base-v2",
     model_kwargs={
         "device": "cpu",
-        "low_cpu_mem_usage": False  # ✅ 加這行
+        "low_cpu_mem_usage": False  # 🔧 關閉 meta tensor 模式
     },
     cache_folder="./.cache"
 )
