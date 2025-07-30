@@ -24,14 +24,12 @@ model = genai.GenerativeModel("gemini-2.5-flash")
 # ✅ 載入 FAISS 向量庫
 INDEX_FILE_PATH = "faiss_index"
 
-from langchain_community.embeddings import HuggingFaceEmbeddings
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
 # 修改後
 import torch
-from langchain_community.embeddings import HuggingFaceEmbeddings
 
 
 embeddings = HuggingFaceEmbeddings(
@@ -61,17 +59,8 @@ import streamlit as st
 from google.oauth2 import service_account
 from google.cloud import vision
 
-import streamlit as st
-from google.oauth2 import service_account
-from google.cloud import vision
-import os
-from google.oauth2 import service_account
-from google.cloud import vision
 
-# 將 .json 憑證內容放在 secrets 或 .env 檔中並寫入 tempfile
-import json
-import tempfile
-import os
+
 
 
 
@@ -209,7 +198,6 @@ import pytesseract
 from PIL import Image
 import fitz  # PyMuPDF
 import io
-
 import easyocr
 import fitz
 from PIL import Image
