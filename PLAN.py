@@ -34,8 +34,11 @@ from langchain_community.vectorstores import FAISS
 
 embeddings = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-mpnet-base-v2",
-    model_kwargs={"device": "cpu"},  # ✅ 強制 CPU，避開 meta tensor 錯誤
-    cache_folder="./.cache"          # ✅ 避免重複下載
+    model_kwargs={
+        "device": "cpu",
+        "low_cpu_mem_usage": False  # ✅ 加這行
+    },
+    cache_folder="./.cache"
 )
 
 vector_store = FAISS.load_local(
