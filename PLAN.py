@@ -204,7 +204,6 @@ from PIL import Image
 
 def build_individual_prompts(questions, full_text, role_name="審查委員"):
     prompts = []
-
     for q in questions:
         docs = vector_store.similarity_search(q, k=3)
         rag_context = "\n---\n".join(doc.page_content for doc in docs)
