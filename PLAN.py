@@ -203,16 +203,22 @@ def extract_text_by_line(pdf_bytes):
     return "\n\n".join(lines)
 
 def ocr_extract_text(pdf_bytes):
-    images = convert_from_bytes(pdf_bytes)
     full_text = ""
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
 
-    for image in images:
-        buffer = io.BytesIO()
-        image.save(buffer, format="JPEG")
-        content = buffer.getvalue()
+    for page in doc:
+        # 將每頁轉成高解析度圖片（提高辨識率）
+        pix = page.get_pixmap(dpi=300)
+        image_bytes = pix.tobytes("png")
 
-        image = vision.Image(content=content)
+        # 傳給 Google Vision API
+        image = vision.Image(content=image_bytes)
         response = vision_client.document_text_detection(image=image)
+
+        if response.error.message:
+            print("Vision API error:", response.error.message)
+            continue
+
         text = response.full_text_annotation.text
         if text:
             full_text += text + "\n\n"
