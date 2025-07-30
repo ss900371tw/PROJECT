@@ -29,21 +29,10 @@ from langchain_community.vectorstores import FAISS
 
 # 修改後
 import torch
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
-
-embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-mpnet-base-v2",
-    model_kwargs={"device": "cpu", "torch_dtype": torch.float32},  # 👈 強制 CPU 和避免 meta tensor
-    cache_folder="./.cache"
-)
-vector_store = FAISS.load_local(
-    "faiss_index",
-    embeddings=embeddings,
-    allow_dangerous_deserialization=True
-)
 
 
+
+vector_store = FAISS.load_local(INDEX_FILE_PATH, embeddings=HuggingFaceEmbeddings(), allow_dangerous_deserialization=True)
 
 
 import os
@@ -205,31 +194,29 @@ from PIL import Image
 
 
 
+
+        
+
 def build_individual_prompts(questions, full_text, role_name="審查委員"):
     prompts = []
     for q in questions:
-        docs = vector_store.similarity_search(q, k=3)
-        rag_context = "\n---\n".join(doc.page_content for doc in docs)
         prompt = f"""
-你是一位{role_name}，請閱讀下方的智慧醫療中心技術手冊及計畫申請文件內容，並針對指定題目作答。  
+你是一位{role_name}，請閱讀下方的文件內容，並針對指定題目作答。  
 請針對該題回答「得分（只能是 0 或 1 分）」以及「原因」。
 
-⚠️ 回答時請**嚴格依照以下格式**，且**不得有任何格式錯誤或多餘說明**。格式錯誤會導致系統無法解析：
+請嚴格依照以下格式委婉作答，不要添加任何多餘說明或格式變化，格式錯誤會導致系統無法解析。
 
-✅ 回答格式（請完整照抄）：
+回答格式如下：
 得分 ⟪x⟫/1 ，原因：...(請緊接在同一行)
 
 題目：{q}
 
----智慧醫療中心技術手冊---
-{rag_context}
 ---文件內容開始---
 {full_text}
 ---文件內容結束---
 """
         prompts.append(prompt.strip())
     return prompts
-
 
 def get_gemini_response(prompt):
     try:
@@ -413,4 +400,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
