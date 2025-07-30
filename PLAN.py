@@ -4,7 +4,7 @@ import google.generativeai as genai
 import re
 import pandas as pd
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from docx import Document
 import tempfile
 import os
@@ -25,7 +25,6 @@ model = genai.GenerativeModel("gemini-2.5-flash")
 INDEX_FILE_PATH = "faiss_index"
 
 
-from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
 # 修改後
