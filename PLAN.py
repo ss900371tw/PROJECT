@@ -211,21 +211,24 @@ from PIL import Image
 import fitz  # PyMuPDF
 import io
 
+import easyocr
+import fitz
+from PIL import Image
+import io
+
 def ocr_extract_text(pdf_bytes):
-    full_text = ""
+    reader = easyocr.Reader(['ch_sim', 'en'])  # 中文簡體 + 英文
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    full_text = ""
 
     for page in doc:
-        pix = page.get_pixmap(dpi=300)  # 高解析度轉圖
-        image_bytes = pix.tobytes("png")
-        image = Image.open(io.BytesIO(image_bytes))
-        
-        # 執行 OCR（可加 config，例如 lang="chi+eng"）
-        text = pytesseract.image_to_string(image, lang="chi+eng")
-        full_text += text + "\n\n"
+        pix = page.get_pixmap(dpi=300)
+        img_data = pix.tobytes("png")
+        image = Image.open(io.BytesIO(img_data))
+        text_lines = reader.readtext(img_data, detail=0)
+        full_text += "\n".join(text_lines) + "\n\n"
 
     return full_text.strip()
-    
 
 def is_scanned_pdf(pdf_bytes, text_threshold=500):
     try:
