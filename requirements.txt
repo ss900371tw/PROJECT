@@ -2,6 +2,7 @@ streamlit
 PyMuPDF
 google-generativeai
 accelerate 
+poppler 
 pandas
 langchain
 langchain-community
