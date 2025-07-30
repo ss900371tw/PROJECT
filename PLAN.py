@@ -417,6 +417,7 @@ def parse_plan_info(plan_result_text):
 
 def main():
     st.set_page_config("📄 多 PDF 自動分析器", layout="wide")
+    st.write("🧪 檢查 st.secrets keys:", st.secrets.keys())
     st.title("📄 多份 PDF 自動分析與資訊處評分")
     uploaded_pdfs = st.file_uploader("📥 上傳 PDF 文件（可複選）", type=["pdf"], accept_multiple_files=True)
     use_split = st.checkbox("✅ 啟用逐題分析（建議用於長文件）")
