@@ -1,6 +1,5 @@
 streamlit
 PyMuPDF
-easyocr
 google-generativeai
 accelerate  
 pandas
@@ -16,4 +15,3 @@ ollama
 google-cloud-vision
 Pillow
 python-dotenv
-pytesseract 
