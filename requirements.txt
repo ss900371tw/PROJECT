@@ -6,7 +6,8 @@ PyMuPDF==1.23.24  # fitz
 python-docx>=0.8.11
 # Google Gemini API
 google-generativeai>=0.4.1
-
+torch==2.1.2 
+transformers==4.36.2
 # PDF 圖像（可留，可刪）
 Pillow>=10.2.0
 
