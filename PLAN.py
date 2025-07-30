@@ -74,23 +74,17 @@ import json
 import tempfile
 import os
 
-# Streamlit Secrets 方法（或從環境變數取）
-service_account_info = st.secrets["gcp_service_account"] if "gcp_service_account" in st.secrets else None
+service_account_info = st.secrets["gcp_service_account"]
 
-if not service_account_info:
-    # 若從 .env 載入
-    from dotenv import load_dotenv
-    load_dotenv()
-    service_account_str = os.getenv("GCP_SERVICE_ACCOUNT_JSON", "")
-    service_account_info = json.loads(service_account_str) if service_account_str else None
+# ✅ 轉為標準 dict
+if hasattr(service_account_info, "to_dict"):
+    service_account_info = service_account_info.to_dict()
 
-if service_account_info:
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
-        json.dump(service_account_info, f)
-        f.flush()
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
-
-
+with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+    json.dump(service_account_info, f)
+    f.flush()
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
+    
 vision_client = vision.ImageAnnotatorClient()
 
 # ✅ 在主程式中呼叫
