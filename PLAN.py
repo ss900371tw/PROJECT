@@ -69,13 +69,28 @@ import os
 from google.oauth2 import service_account
 from google.cloud import vision
 
-# ✅ 載入 service account 憑證
-credentials = service_account.Credentials.from_service_account_file(
-    "quizocr-461409-db28f8349f76.json"
-)
+# 將 .json 憑證內容放在 secrets 或 .env 檔中並寫入 tempfile
+import json
+import tempfile
+import os
 
-# ✅ 用憑證建立 vision client
-vision_client = vision.ImageAnnotatorClient(credentials=credentials)
+# Streamlit Secrets 方法（或從環境變數取）
+service_account_info = st.secrets["gcp_service_account"] if "gcp_service_account" in st.secrets else None
+
+if not service_account_info:
+    # 若從 .env 載入
+    from dotenv import load_dotenv
+    load_dotenv()
+    service_account_str = os.getenv("GCP_SERVICE_ACCOUNT_JSON", "")
+    service_account_info = json.loads(service_account_str) if service_account_str else None
+
+if service_account_info:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+        json.dump(service_account_info, f)
+        f.flush()
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
+
+
 
 
 # ✅ 在主程式中呼叫
