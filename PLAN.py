@@ -314,7 +314,10 @@ def extract_table_from_response(response_text, questions, facility_level="", sco
             "原因": legal_compliance_result
         })
 
-    return pd.DataFrame(rows)
+    # ✅ 建立 DataFrame 並將得分轉為字串，避免 Arrow 轉換錯誤
+    df = pd.DataFrame(rows)
+    df["得分"] = df["得分"].astype(str)
+    return df
     
 
 def render_score_table(title, response_text, questions, color, facility_level, score_cap_dict, pdf_filename, repeated_subsidy_result, plan_result,legal_compliance_result):
