@@ -32,8 +32,11 @@ import torch
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
-embeddings = HuggingFaceEmbeddings()
-
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-mpnet-base-v2",
+    model_kwargs={"device": "cpu", "torch_dtype": torch.float32},  # 👈 強制 CPU 和避免 meta tensor
+    cache_folder="./.cache"
+)
 vector_store = FAISS.load_local(
     "faiss_index",
     embeddings=embeddings,
