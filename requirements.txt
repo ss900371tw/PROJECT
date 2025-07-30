@@ -1,17 +1,30 @@
-streamlit
-numpy==1.26.4
-PyMuPDF
-google-generativeai
-accelerate  
-pandas
-langchain
-langchain-community
-faiss-cpu
-sentence-transformers
-transformers==4.40.2
-torch==2.0.1
-python-docx
-ollama
-google-cloud-vision
-Pillow
-python-dotenv
+# Web UI
+streamlit>=1.31.0
+
+# PDF 處理
+PyMuPDF==1.23.24  # fitz
+
+# Google Gemini API
+google-generativeai>=0.4.1
+
+# PDF 圖像（可留，可刪）
+Pillow>=10.2.0
+
+# RAG / Embedding
+langchain>=0.2.0
+langchain-community>=0.2.0
+langchain-huggingface>=0.0.6
+sentence-transformers==2.6.1
+faiss-cpu==1.8.0  # 若使用 GPU 請改為 faiss-gpu
+
+# 向量儲存
+numpy==1.26.4  # 非 2.x，避免 meta tensor 錯誤
+scikit-learn>=1.4.0
+
+# Data handling
+pandas>=2.2.1
+pyarrow>=15.0.0
+
+# 其他工具
+python-dotenv>=1.0.0
+ollama  # 若你確實使用了它
