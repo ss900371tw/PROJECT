@@ -199,9 +199,10 @@ from PIL import Image
 
 def build_individual_prompts(questions, full_text, role_name="審查委員"):
     prompts = []
-    docs = vector_store.similarity_search(query, k=3)
-    rag_context = "\n---\n".join(doc.page_content for doc in docs)
+
     for q in questions:
+        docs = vector_store.similarity_search(q, k=3)
+        rag_context = "\n---\n".join(doc.page_content for doc in docs)
         prompt = f"""
 你是一位{role_name}，請閱讀下方的智慧醫療中心技術手冊及計畫申請文件內容，並針對指定題目作答。  
 請針對該題回答「得分（只能是 0 或 1 分）」以及「原因」。
