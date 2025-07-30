@@ -10,7 +10,6 @@ import tempfile
 import os
 import ollama
 from google.cloud import vision
-from pdf2image import convert_from_bytes
 import io
 from PIL import Image
 from difflib import SequenceMatcher 
