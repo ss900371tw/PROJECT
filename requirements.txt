@@ -12,6 +12,5 @@ torch==2.0.1
 python-docx
 ollama
 google-cloud-vision
-pdf2image
 Pillow
 python-dotenv
