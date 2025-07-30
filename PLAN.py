@@ -74,32 +74,6 @@ import json
 import tempfile
 import os
 
-from google.oauth2 import service_account
-from google.cloud import vision
-SCOPES = ["https://www.googleapis.com/auth/cloud-platform"]
-# 如果你是從 secrets 或其他方式取得字典型別的憑證資訊
-credentials_dict = {
-  "type": "service_account",
-  "project_id": "quizocr-461409",
-  "private_key_id": "db28f8349f76c4cd08af74e76f3208a983c01895",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC4IJC12z8QNiWm\nOX6u2H0VDdFCUKfioqq83gPCyPmVvB/OcQ5gxO7c2YTx9nHTMdz8aDOPkePs4HLM\nwrZfzGSj9jffhqAbRyZBkeOvIR+dC1nsa6c5eEhsVFqy3+YIHquZ3XnNLlkqe2No\n+3ImpgEFSe/xFqqxaeRGKgrbIKJbBme+VjDQH7XjYj+U2vu4lvN6CMGAYogxPyH9\nAl6wuEOjeugN2AZySg6EKVj70lK1pOSzJhZltnHElWPPPKFB+89HLG7XE46W269B\ndfW3QYQ3i3NbT1ubgYIdQ7zKJJd88UOtN1rH/PVMB0m2xYLx+BfTANFQRULF2B9u\nvz1+zaD3AgMBAAECggEACcY4yF6eJ2cocn2E2xVE9pQoMqQDdYV7GNGUU4fFsAwv\niA76W2q432Jwq0OQ4Uw5VfDWI93zwoRbs8D2W3mHMikE6EnGQAxz3HE5K/fPLNAI\ncwN3+hYHijCkK/C0zmOKan2WVK0MMLQiH9WRRrnzPeuh4CN65jYf1xWuQ9mkpL5I\nMQ7fL1Ed/q7MWHHhTKwMlfQYXr/4Nw3kPKqJS/LzoaomscSWgTEAjVSRExQVEIdM\n5n3mJtnOG3Ecu7i7OVEi9l0wJrwffXjCKy9CEjiysdhN/9fJeFtFSlVzfQFGydYm\n3BZYtabzszULMmSAjiR0Njqq0Hq88n85dj4qsFOZOQKBgQDpc8icoNQDDUhz5Fe0\nzLrvmq5CTm6VIWLmCk+uwDS8eQrdUYLESJOfEkK2vFGRmM/QMJDORc9Cg1Utl5/e\nD1/4FjQuEFK4cydiTniyH9m3fZgDR7/DCZlywILZXWlhbRhsFvrW7fkSNQv3Y9Uc\nuQxX2mSBK53dJ4RmUhmz8TKcmwKBgQDJ6TI+JpcsVr3QKQcDCTGl+oeUi8ZBkyB/\nwHThDuLG6wYgq3YhbyOUbvLkgAZffqw1kJQ0Rnbl34O/1Qx3slMeYlVyTehVsOT3\nX++0p8IYCWwN1JajFPqz7RJJKIkwYzj3NeY3LUOV0IG7AJ7MT10LMpqeDufmJy5r\nOaqLzEc81QKBgCLVjwKoENqfucbpNJkaz23/Q69LKr7/61TuBvPJZFUXLqLVjdCi\nD7z1qZTAxt8V0TR8eq78xa9kD2qtLEKjQquvDHwvHVi+fgryMJpLnF3/1JXwt9Fv\ndkEkLqImiRnrgHBogWdevQKVfcKdV+hgSFI3mTWY/4ZHZj8qUwGBpQ6vAoGAL2fD\n9xmiZrOa7zOixNC0ym5uxK6ohp7fg38RMgIHtoJZtvPq0WDBrsj52DJCzMr17cGb\nOkbNBZ2b1j9UJQpGP50AyMyH3w6gQ4BPzE+S34feycR+9Z0oW3Qu1eRhiW3SYyBR\ng+TpuFPzEY/MuNVtWAKykKeZRM0wNdadNyNoGl0CgYBnk0bS64XZjGbY2tJKw8aP\nalOOKLZhtkmwB663TWBZ7zkvNkcfFWt2fm97yI+IphFLf9kCeehf+oV3ygClC27l\nx43w8AyNtBEHjAQW+klYwv3z7ECcmqQ8adMARM8fpEETuIkIaH16zsArEgr4mbcH\n0Laj2sb+FnkfS4lDz5Fj5A==\n-----END PRIVATE KEY-----\n",
-  "client_email": "vision-api-account@quizocr-461409.iam.gserviceaccount.com",
-  "client_id": "109656951426604061257",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/vision-api-account%40quizocr-461409.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
-}
-
-from google.oauth2 import service_account
-
-with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as tmp:
-    json.dump(credentials_dict, tmp)
-    tmp.flush()
-    credentials = service_account.Credentials.from_service_account_file(tmp.name, scopes=SCOPES)
-    vision_client = vision.ImageAnnotatorClient(credentials=credentials)
-
 
 
 # ✅ 在主程式中呼叫
@@ -232,29 +206,26 @@ def extract_text_by_line(pdf_bytes):
                 lines.append(text)
     return "\n\n".join(lines)
 
+import pytesseract
+from PIL import Image
+import fitz  # PyMuPDF
+import io
+
 def ocr_extract_text(pdf_bytes):
     full_text = ""
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
 
     for page in doc:
-        # 將每頁轉成高解析度圖片（提高辨識率）
-        pix = page.get_pixmap(dpi=300)
+        pix = page.get_pixmap(dpi=300)  # 高解析度轉圖
         image_bytes = pix.tobytes("png")
-
-        # 傳給 Google Vision API
-        image = vision.Image(content=image_bytes)
-        response = vision_client.document_text_detection(image=image)
-
-        if response.error.message:
-            print("Vision API error:", response.error.message)
-            continue
-
-        text = response.full_text_annotation.text
-        if text:
-            full_text += text + "\n\n"
+        image = Image.open(io.BytesIO(image_bytes))
+        
+        # 執行 OCR（可加 config，例如 lang="chi+eng"）
+        text = pytesseract.image_to_string(image, lang="chi+eng")
+        full_text += text + "\n\n"
 
     return full_text.strip()
-
+    
 
 def is_scanned_pdf(pdf_bytes, text_threshold=500):
     try:
