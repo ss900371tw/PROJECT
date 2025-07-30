@@ -91,7 +91,7 @@ if service_account_info:
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
 
 
-
+vision_client = vision.ImageAnnotatorClient()
 
 # ✅ 在主程式中呼叫
 # ✅ 分類提示詞
