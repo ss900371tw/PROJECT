@@ -14,3 +14,4 @@ ollama
 google-cloud-vision
 Pillow
 python-dotenv
+pytesseract 
