@@ -202,20 +202,6 @@ import fitz
 from PIL import Image
 import io
 
-def ocr_extract_text(pdf_bytes):
-    reader = easyocr.Reader(['ch_sim', 'en'])  # 中文簡體 + 英文
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-    full_text = ""
-
-    for page in doc:
-        pix = page.get_pixmap(dpi=300)
-        img_data = pix.tobytes("png")
-        image = Image.open(io.BytesIO(img_data))
-        text_lines = reader.readtext(img_data, detail=0)
-        full_text += "\n".join(text_lines) + "\n\n"
-
-    return full_text.strip()
-
 def is_scanned_pdf(pdf_bytes, text_threshold=500):
     try:
         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
@@ -403,8 +389,7 @@ def main():
             pdf_filename = uploaded_pdf.name.rsplit(".", 1)[0]
             with st.spinner(f"⏳ 分析中：{uploaded_pdf.name}"):
                 # ✅ 自動判斷是否為掃描 PDF
-                full_text = ocr_extract_text(pdf_bytes)
-
+                full_text = extract_text_by_line(pdf_bytes)
                 facility_prompt = FACILITY_PROMPT.replace("{text}", full_text)
                 facility_type = get_gemini_response(facility_prompt).strip()
                 plan_prompt = PLAN_PROMPT.replace("{text}", full_text)
