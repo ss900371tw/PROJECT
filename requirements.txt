@@ -1,5 +1,6 @@
 streamlit
 PyMuPDF
+easyocr
 google-generativeai
 accelerate  
 pandas
