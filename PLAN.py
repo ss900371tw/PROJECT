@@ -66,10 +66,16 @@ import streamlit as st
 from google.oauth2 import service_account
 from google.cloud import vision
 import os
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "quizocr-461409-db28f8349f76.json"
+from google.oauth2 import service_account
+from google.cloud import vision
 
-# 建立 vision client（✅ 指定 credentials）
-vision_client = vision.ImageAnnotatorClient()
+# ✅ 載入 service account 憑證
+credentials = service_account.Credentials.from_service_account_file(
+    "quizocr-461409-db28f8349f76.json"
+)
+
+# ✅ 用憑證建立 vision client
+vision_client = vision.ImageAnnotatorClient(credentials=credentials)
 
 
 # ✅ 在主程式中呼叫
