@@ -201,7 +201,7 @@ def build_individual_prompts(questions, full_text, role_name="審查委員"):
     prompts = []
     for q in questions:
         prompt = f"""
-你是一位{role_name}，請閱讀下方的文件內容，並針對指定題目作答。  
+你是一位{role_name}，請閱讀下方的智慧醫療中心技術手冊及計畫申請文件內容，並針對指定題目作答。  
 請針對該題回答「得分（只能是 0 或 1 分）」以及「原因」。
 
 請嚴格依照以下格式委婉作答，不要添加任何多餘說明或格式變化，格式錯誤會導致系統無法解析。
@@ -211,6 +211,8 @@ def build_individual_prompts(questions, full_text, role_name="審查委員"):
 
 題目：{q}
 
+---智慧醫療中心技術手冊---
+{rag_context}
 ---文件內容開始---
 {full_text}
 ---文件內容結束---
