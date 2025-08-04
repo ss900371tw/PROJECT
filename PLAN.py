@@ -60,7 +60,7 @@ import os
 # ✅ 在主程式中呼叫
 # ✅ 分類提示詞
 FACILITY_PROMPT = """
-請判斷下列申請文件所屬醫療機構層級，僅從下列五類中擇一，**不得恣意新增新分類**：
+請判斷下列申請文件所屬醫療機構層級，僅從下列五類中擇一，**不得恣意新增新分類，也不得將醫學會等組織視為醫學中心**：
 「醫學中心」、「關鍵基礎設施區域醫院」、「非關鍵基礎設施區域醫院」、「地區醫院」、「診所」。
 請嚴格只回覆其中一個分類名稱，不要加任何說明或標點符號。
 
@@ -116,7 +116,7 @@ REPEATED_SUBSIDY_PROMPT = """
 """
 
 PLAN_PROMPT = """
-請根據以下健康台灣深耕計畫申請書內容，**準確且無錯字地**擷取並列出下列資訊，每一項請以**固定格式**回答：
+請依據申請書原文，準確擷取並列出下列資訊，**請勿將範疇或子標題誤判為計畫名稱**：
 
 申請機構：XXX  
 計畫名稱：XXX（注意：請勿誤將計畫範疇誤認為計畫名稱）  
@@ -205,12 +205,22 @@ def build_individual_prompts(questions, full_text, role_name="審查委員"):
         rag_context = "\n---\n".join(doc.page_content for doc in docs)
         prompt = f"""
 你是一位{role_name}，請閱讀下方的文件內容，針對指定題目參考智慧醫療中心技術手冊作答。  
+請注意：若文件中未明確提及指定內容，請勿依據其他字眼合理推測、延伸、補充或給分
 請針對該題回答「得分（只能是 0 或 1 分）」以及「原因」。
 
 ⚠️ 請務必嚴格遵守以下規則，否則系統將無法解析你的回答：
 1. 不要使用任何 Markdown 語法（例如：**粗體**、`程式碼區塊`、```區塊符號```、- 項目符號等）
 2. 請勿添加任何額外說明、問候語、總結語或格式變化
-3. 回答必須完全依照下列格式，否則會被視為格式錯誤：
+3. 回答必須完全依照下列格式，否則會被視為格式錯誤
+
+審查準則（🚫 嚴禁推論與誤判）：
+1. 不得基於推論給分（例如：不能因為文件提到 AI 或資安字詞就合理化未提及的內容）
+2. 不得以詞語相似或模糊描述作為符合依據（例如：「環境永續」≠「七大倫理中的永續」）
+3. 僅能根據文件中**明確陳述**的事證判斷，不可使用 AI 合理化或幻覺內容
+4. 認證標準如「ISO 27001」可視為**已執行風險評估**，但不得推論已建置 WAF、防火牆等
+5. 如果僅提到平台建置、LINE 帳號、合作等，不代表有「跨院資料交換規劃」
+6. 文件中提及使用 EDR ≠ 已建置防火牆、SPAM 過濾、或弱點掃描等基礎機制
+7. 「資通安全維護計畫」應為專門文件，不能以「內文提到資安規劃」作為替代依據
 
 回答格式如下：
 得分 ⟪x⟫/1 ，原因：...(請緊接在同一行)
@@ -242,7 +252,7 @@ def query_rag_for_legal_compliance(full_text, vector_store=vector_store, model=m
     rag_context = "\n---\n".join(doc.page_content for doc in docs)
     rag_prompt = f"""
 你是一位熟悉政府補助法規與實務審查的資深審查員，請依據下列法規與技術規範，嚴格審查下方申請書內容是否符合政府補助之「資安要求」與「法規合規性」。
-
+⚠️ 請勿基於推論和非明載內容給予符合評價，並請勿將未提及之法規作為否決依據。
 ⚠️ 請嚴格依據以下文件進行審查，不要使用任何 Markdown 語法（例如：**粗體**、`程式碼區塊`、```區塊符號```、- 項目符號等），也不得推論、臆測、合理化或補足未明載於計畫中的內容：
 - 衛福部《健康台灣深耕計畫》範疇三：資安治理、資料治理、AI治理 懶人包與問答集
 - 《資通安全管理法》與《資通安全責任等級分級辦法》
@@ -290,12 +300,43 @@ def extract_table_from_response(response_text, questions, facility_level="", sco
     # ✅ 篩除虛擬題目
     rows = [row for row in rows if not row["題目"].startswith("36.")]
 
-    # ✅ 總分
-    total = sum(r["得分"] for r in rows if isinstance(r["得分"], int))
-    max_score = score_cap_dict.get(facility_level.strip(), len(rows)) if score_cap_dict else len(rows)
-    percent = round((total / max_score) * 100)
-    rows.append({"題目": f"✅ 總分（{facility_level}）", "得分": f"{total}/{max_score}", "原因": f"{percent}%"})
+    # 分三領域計算加權分數
+    df = pd.DataFrame(rows)
+    df["領域"] = ""
 
+    # 分配領域標籤
+    df.loc[0:21, "領域"] = "資安治理"
+    df.loc[22:27, "領域"] = "資料治理"
+    df.loc[28:34, "領域"] = "AI治理"
+
+    # 各領域分數加總與加權
+    score_dict = {
+        "資安治理": {"total": 22, "weight": 40},
+        "資料治理": {"total": 6, "weight": 30},
+        "AI治理": {"total": 7, "weight": 30},
+    }
+
+    summary_rows = []
+    weighted_total = 0
+    for domain, config in score_dict.items():
+        domain_score = df[df["領域"] == domain]["得分"].sum()
+        weighted = round(domain_score / config["total"] * config["weight"])
+        weighted_total += weighted
+        summary_rows.append({
+            "題目": f"📊 {domain}總分",
+            "得分": f"{domain_score}/{config['total']} → {weighted}分",
+            "原因": ""
+        })
+
+    summary_rows.append({
+        "題目": "✅ 加權總分",
+        "得分": f"{weighted_total}/100",
+        "原因": f"{facility_level} 計算完成"
+    })
+
+    # 合併 DataFrame 與 Summary
+    final_df = pd.concat([df, pd.DataFrame(summary_rows)], ignore_index=True)
+    return final_df
     # ✅ 重複補助
     if repeated_subsidy_result:
         sub_score = 0 if "是否重複申請：0" in repeated_subsidy_result else ""
