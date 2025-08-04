@@ -359,8 +359,8 @@ def extract_table_from_response(response_text, questions, facility_level="", sco
             "得分": legal_score,
             "原因": legal_compliance_result
         })
-
-    return pd.DataFrame(summary_rows)
+    final_df = pd.concat([df, pd.DataFrame(summary_rows)], ignore_index=True)
+    return final_df
 
 
 def render_score_table(title, response_text, questions, color, facility_level, score_cap_dict, pdf_filename, repeated_subsidy_result, plan_result,legal_compliance_result):
