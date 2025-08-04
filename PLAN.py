@@ -334,13 +334,11 @@ def extract_table_from_response(response_text, questions, facility_level="", sco
         "原因": f"{facility_level} 計算完成"
     })
 
-    # 合併 DataFrame 與 Summary
-    final_df = pd.concat([df, pd.DataFrame(summary_rows)], ignore_index=True)
-    return final_df
+
     # ✅ 重複補助
     if repeated_subsidy_result:
         sub_score = 0 if "是否重複申請：0" in repeated_subsidy_result else ""
-        rows.append({
+        summary_rows.append({
             "題目": "📌 是否重複申請補助",
             "得分": sub_score,
             "原因": repeated_subsidy_result
@@ -349,20 +347,20 @@ def extract_table_from_response(response_text, questions, facility_level="", sco
     # ✅ 機構、計畫名稱、計畫代號
     if plan_result:
         org, plan_name, plan_code = parse_plan_info(plan_result)
-        rows.append({"題目": "🏢 申請機構", "得分": "", "原因": org})
-        rows.append({"題目": "📝 計畫名稱", "得分": "", "原因": plan_name})
-        rows.append({"題目": "🆔 計畫申請編號", "得分": "", "原因": plan_code})
+        summary_rows.append({"題目": "🏢 申請機構", "得分": "", "原因": org})
+        summary_rows.append({"題目": "📝 計畫名稱", "得分": "", "原因": plan_name})
+        summary_rows.append({"題目": "🆔 計畫申請編號", "得分": "", "原因": plan_code})
 
     # ✅ 適法性結果
     if legal_compliance_result:
         legal_score = "符合" if "是否符合適法性：符合" in legal_compliance_result else "不符合"
-        rows.append({
+        summary_rows.append({
             "題目": "📌 是否符合適法性",
             "得分": legal_score,
             "原因": legal_compliance_result
         })
 
-    return pd.DataFrame(rows)
+    return pd.DataFrame(summary_rows)
 
 
 def render_score_table(title, response_text, questions, color, facility_level, score_cap_dict, pdf_filename, repeated_subsidy_result, plan_result,legal_compliance_result):
